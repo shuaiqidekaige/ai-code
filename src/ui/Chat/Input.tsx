@@ -1,9 +1,10 @@
-import { Text, useInput } from "ink";
+import { Text, useInput, type Key } from "ink";
 import chalk from "chalk";
 import { darkTheme } from "./constants";
 import { useTextInput } from "../hooks/useTexInput";
 
 interface InputProps {
+  multiline?: boolean;
   value: string;
   columns: number;
   offset: number;
@@ -11,10 +12,12 @@ interface InputProps {
   isDimmed?: boolean;
   onChange: (value: string) => void;
   onChangeCursorOffset: (offset: number) => void;
+  onSubmit: (value: string) => void;
 }
 
 export function Input(props: InputProps) {
   const {
+    multiline = false,
     value: originalValue,
     columns,
     offset,
@@ -22,9 +25,12 @@ export function Input(props: InputProps) {
     placeHolder = "",
     onChange,
     onChangeCursorOffset,
+    onSubmit,
   } = props;
 
   const { onInput, renderedValue } = useTextInput({
+    onSubmit,
+    multiline,
     value: originalValue,
     columns: columns,
     offset: offset,
@@ -37,7 +43,12 @@ export function Input(props: InputProps) {
     ? chalk.hex(darkTheme.secondaryText)(placeHolder)
     : undefined;
 
-  useInput(onInput, { isActive: true });
+  
+  const wrappedOnInput = (input: string, key: Key) => {
+    onInput(input, key);
+  }
+
+  useInput(wrappedOnInput, { isActive: true });
 
   return (
     <Text wrap="truncate-end" dimColor={isDimmed}>

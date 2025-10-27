@@ -41,11 +41,13 @@ export function Chat() {
       <Box flexDirection="row" gap={1}>
         <Text color={UI_COLORS.CHAT_ARROW_ACTIVE}>{promptSymbol}</Text>
         <Input
+          multiline
           value={displayValue}
           columns={columns}
           offset={displayCursorOffset}
           onChange={handleDisplayChange}
           onChangeCursorOffset={handleDisplayCursorChange}
+          onSubmit={handlers.handleSubmit}
           placeHolder="Press up to edit queued messages"
         />
       </Box>

@@ -11,10 +11,22 @@ export function useInputHandlers() {
     [inputState]
   );
 
+  const handleSubmit = useCallback(
+    (val: string) => {
+      const value = inputState.state.value.trim();
+      if (value === '') return;
+
+      inputState.setValue('');
+      console.log('发送')
+    },
+    [inputState]
+  );
+
   return {
     inputState,
     handlers: {
       handleChange,
+      handleSubmit,
     },
   };
 }
