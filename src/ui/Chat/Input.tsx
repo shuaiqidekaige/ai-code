@@ -9,6 +9,8 @@ interface InputProps {
   offset: number;
   placeHolder?: string;
   isDimmed?: boolean;
+  onChange: (value: string) => void;
+  onChangeCursorOffset: (offset: number) => void;
 }
 
 export function Input(props: InputProps) {
@@ -18,13 +20,16 @@ export function Input(props: InputProps) {
     offset,
     isDimmed = false,
     placeHolder = "",
+    onChange,
+    onChangeCursorOffset,
   } = props;
-
 
   const { onInput, renderedValue } = useTextInput({
     value: originalValue,
     columns: columns,
     offset: offset,
+    onChange,
+    onOffsetChange: onChangeCursorOffset,
   });
 
   const showPlaceholder = originalValue.length === 0 && placeHolder;

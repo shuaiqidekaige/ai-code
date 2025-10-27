@@ -1,16 +1,18 @@
 import type { Key } from "ink";
-import { Cursor } from "../utils/Cursor";
+import Cursor from "../utils/Cursor";
 import { useState } from "react";
 
 interface UseTextInputProps {
   value: string;
   columns: number;
   offset: number;
+  onChange: (value: string) => void;
+  onOffsetChange: (offset: number) => void;
 }
 
 export function useTextInput(props: UseTextInputProps) {
-  const { value: originalValue, columns, offset } = props;
-  const [cursor,  setCursor] = useState(Cursor.fromText(originalValue, columns, offset));
+  const { value: originalValue, columns, offset, onChange, onOffsetChange } = props;
+  const cursor = Cursor.fromText(originalValue, columns, offset);
 
   const handleCtrl = () => {};
 
@@ -28,10 +30,15 @@ export function useTextInput(props: UseTextInputProps) {
   return {
     onInput: (input: string, key: Key) => {
       const newCursor = matchKeyToAction(key)(input);
-      if (newCursor !== cursor && newCursor !== undefined) {
-        setCursor(newCursor);
+      if (newCursor) {
+        if (!cursor.equals(newCursor)) {
+          onOffsetChange(newCursor.offset);
+          if (cursor.text != newCursor.text) {
+            onChange(newCursor.text || '');
+          }
+        }
       }
     },
-    renderedValue: cursor.text,
+    renderedValue: cursor.render(),
   };
 }
